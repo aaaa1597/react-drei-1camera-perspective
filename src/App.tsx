@@ -1,7 +1,7 @@
 import React, { useRef, useState }  from 'react';
 import './App.css';
 import * as THREE from 'three'
-import { Canvas, useFrame, ThreeElements } from '@react-three/fiber'
+import { Canvas, useFrame, ThreeElements, ReactThreeFiber } from '@react-three/fiber'
 import { Text } from '@react-three/drei';
 
 const Box = (props: ThreeElements['mesh']) => {
@@ -23,28 +23,15 @@ const Box = (props: ThreeElements['mesh']) => {
   )
 }
 
-const Text1 = (props: { font?: string, fontSize?: number}) => {
+const Text2 = (props: { children?: string, position?: [x:number, y: number, z:number], font?: string, fontSize?: number, color?: ReactThreeFiber.Color}) => {
   const texsRef = useRef({} as any)
   useFrame(() => {
     texsRef.current.rotation.x += 0.01
   });
 
   return (
-    <group ref={texsRef} position={[-2, 1, 0]} >
-        <Text font={props.font} fontSize={props.fontSize} color={'#ff0203'}>HELLO</Text>
-    </group>
-  )
-}
-
-const Text2 = (props: { font?: string, fontSize?: number}) => {
-  const texsRef = useRef({} as any)
-  useFrame(() => {
-    texsRef.current.rotation.x += 0.01
-  });
-
-  return (
-    <group ref={texsRef} position={[1, 0, 2]} >
-        <Text font={props.font} fontSize={props.fontSize} color={'#03ffff'}>WORLD</Text>
+    <group ref={texsRef}>
+        <Text position={props.position} font={props.font} fontSize={props.fontSize} color={props.color}>{props.children}</Text>
     </group>
   )
 }
@@ -57,8 +44,8 @@ const App = () => {
         <pointLight position={[10, 10, 10]} />
         <Box position={[-1.2, 0, 0]} />
         <Box position={[1.2, 0, 0]} />
-        <Text1 font="/Roboto-Black.ttf" fontSize={1} />
-        <Text2 font="/Roboto-Black.ttf" fontSize={1}/>
+        <Text2 position={[-2, 1, 0]} font="/Roboto-Black.ttf" fontSize={1} color={'#ff0203'}>HELLO</Text2>
+        <Text2 position={[1, 0, 2]} font="/Roboto-Black.ttf" fontSize={1} color={'#03ffff'}>WORLD</Text2>
       </Canvas>
     </div>
   );
