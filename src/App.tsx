@@ -30,8 +30,8 @@ const Text2 = (props: { children?: string, position?: [x:number, y: number, z:nu
   });
 
   return (
-    <group ref={texsRef}>
-        <Text position={props.position} font={props.font} fontSize={props.fontSize} color={props.color}>{props.children}</Text>
+    <group ref={texsRef} position={props.position} >
+        <Text font={props.font} fontSize={props.fontSize} color={props.color}>{props.children}</Text>
     </group>
   )
 }
