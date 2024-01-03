@@ -1,51 +1,35 @@
-import React, { useRef, useState }  from 'react';
+import React, {useRef} from 'react';
 import './App.css';
+import { Canvas, useFrame, MeshProps, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
-import { Canvas, useFrame, ThreeElements, ReactThreeFiber } from '@react-three/fiber'
-import { Text } from '@react-three/drei';
+import { OrbitControls, Environment } from '@react-three/drei'
 
-const Box = (props: ThreeElements['mesh']) => {
-  const meshRef = useRef<THREE.Mesh>(null!)
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
+const Box = (props: MeshProps) => {
+  const ref = useRef<THREE.Mesh>(null!)
+
+  useFrame((_, delta) => {
+    if( !ref.current) return
+    ref.current.rotation.x += 1 * delta
+    ref.current.rotation.y += 0.5 * delta
+  })
+
   return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(e) => setActive(!active) }
-      onPointerOver={(e) => setHover(true)}
-      onPointerOut={(e) => setHover(false)}>
-        <boxGeometry args={[1, 1, 1]} />
-        < meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
+    <mesh {...props} ref={ref}>
+      <boxGeometry />
+      <meshNormalMaterial />
     </mesh>
-  )
-}
-
-const Text2 = (props: { children?: string, position?: [x:number, y: number, z:number], font?: string, fontSize?: number, color?: ReactThreeFiber.Color}) => {
-  const texsRef = useRef({} as any)
-  useFrame(() => {
-    texsRef.current.rotation.x += 0.01
-  });
-
-  return (
-    <group ref={texsRef} position={props.position} >
-        <Text font={props.font} fontSize={props.fontSize} color={props.color}>{props.children}</Text>
-    </group>
   )
 }
 
 const App = () => {
   return (
-    <div id="canvas-container">
-      <Canvas>
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <Box position={[-1.2, 0, 0]} />
-        <Box position={[1.2, 0, 0]} />
-        <Text2 position={[-2, 1, 0]} font="/Roboto-Black.ttf" fontSize={1} color={'#ff0203'}>HELLO</Text2>
-        <Text2 position={[1, 0, 2]} font="/Roboto-Black.ttf" fontSize={1} color={'#03ffff'}>WORLD</Text2>
+    <div style={{ width: "100vw", height: "75vh" }}>
+      <Canvas camera={{ position: [0, 3, 5] }}>
+        <Box position={[1, 1, 1]} name="A" />
+        <Environment preset="forest" background />
+        <OrbitControls />
+        <axesHelper args={[5]} />
+        <gridHelper />
       </Canvas>
     </div>
   );
